@@ -10,6 +10,6 @@ Energy Scout now has a dedicated HA sidebar page for larger installations.
 
 Update through HACS, restart HA, and reload the frontend. Open **Energy Scout** in the sidebar. Choose **Select recommended → Review additions → Add N devices**.
 
-[Desktop, phone and batch-review previews](https://github.com/nemke/ha-energy-scout/blob/v0.1.0b2/README.md#scan--select--review--add).
+[Desktop, phone and batch-review previews](https://github.com/nemke/ha-energy-scout/blob/v0.1.0b3/README.md#scan--select--review--add).
 
 Validation targets HA 2026.10.4 and its matching frontend. Devices and Recorder metadata in automated tests are simulated. The native component loader and Energy preferences API are version-dependent. Existing counters are displayed for review; this beta does not replace their mappings automatically or introduce unattended registration.
