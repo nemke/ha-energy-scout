@@ -28,6 +28,8 @@ async def test_reads_device_area_and_stable_registry_ids(hass, loaded):
         "washer-total",
         device_id=device.id,
         suggested_object_id="washer_energy_total",
+        original_name="Washer total energy",
+        translation_key="energy_total",
     )
     power = registry.async_get_or_create(
         "sensor", "tasmota", "washer-watts", device_id=device.id, suggested_object_id="washer_power"
@@ -54,6 +56,8 @@ async def test_reads_device_area_and_stable_registry_ids(hass, loaded):
     with patch("custom_components.energy_scout.scout.get_metadata", return_value=metadata):
         result = {source.entity_id: source for source in await read_sources(scout)}
         assert result[energy.entity_id].key == energy.id
+        assert result[energy.entity_id].original_name == "Washer total energy"
+        assert result[energy.entity_id].translation_key == "energy_total"
         assert result[energy.entity_id].area == "Utility room"
         assert result[energy.entity_id].name == "Washer lifetime energy"
         assert result[energy.entity_id].has_sum

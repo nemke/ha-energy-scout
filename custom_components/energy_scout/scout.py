@@ -107,6 +107,8 @@ class Scout:
                     has_mean=bool(data.get("has_mean") or data.get("mean_type")),
                     disabled=bool(entry and entry.disabled),
                     last_reset=bool(attributes.get("last_reset")),
+                    original_name=entry.original_name if entry else None,
+                    translation_key=entry.translation_key if entry else None,
                 )
             )
         return sources

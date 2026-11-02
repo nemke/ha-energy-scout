@@ -80,6 +80,20 @@ def fixtures() -> list[Source]:
             has_sum=False,
         )
     )
+    # Exercise health-tracker energy alongside electrical counters. These even
+    # have cumulative statistics, but must never appear in the appliance table.
+    for kind in ("active", "total"):
+        rows.append(
+            replace(
+                rows[0],
+                key=f"phone-{kind}-calories",
+                device_id="phone",
+                entity_id=f"sensor.phone_{kind}_calories_burned",
+                name=f"Phone {kind} calories burned",
+                unit="kcal",
+                value="1200",
+            )
+        )
     return rows
 
 

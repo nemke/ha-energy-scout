@@ -24,6 +24,8 @@ class Source:
     has_mean: bool = False
     disabled: bool = False
     last_reset: bool = False
+    original_name: str | None = None
+    translation_key: str | None = None
 
 
 @dataclass(slots=True)
@@ -97,6 +99,57 @@ def referenced_statistics(preferences: dict[str, Any]) -> set[str]:
     return result
 
 
+def personal_energy(source: Source) -> bool:
+    """Recognize activity/nutrition counters without banning valid heat units.
+
+    HA's energy device class and units include calories. Units alone cannot
+    distinguish a fitness tracker from a heating meter. Preserve original sensor
+    labels as hints when users rename the entity or its display name.
+    """
+    words = set(
+        re.findall(
+            r"[a-z]+",
+            " ".join(
+                filter(
+                    None,
+                    (
+                        source.entity_id,
+                        source.name,
+                        source.original_name,
+                        source.translation_key,
+                    ),
+                )
+            ).lower(),
+        )
+    )
+    activity = {
+        "active",
+        "resting",
+        "basal",
+        "burned",
+        "burnt",
+        "exercise",
+        "workout",
+        "fitness",
+        "intake",
+        "nutrition",
+        "food",
+        "diet",
+    }
+    if (
+        words & {"calorie", "calories", "kilocalorie", "kilocalories", "caloric"}
+        and words & activity
+    ):
+        return True
+    # Companion apps also call these Active/Resting Energy. Electrical active
+    # energy in Wh/kWh and generic heat meters in calorie units remain valid.
+    return (
+        source.unit in {"cal", "kcal", "Cal", "kCal"}
+        and "energy" in words
+        and bool(words & {"active", "resting", "basal", "exercise", "workout", "fitness"})
+    )
+
+
 def discover(
     sources: list[Source],
     preferences: dict[str, Any],
@@ -118,13 +171,22 @@ def discover(
         and numeric(source.value, nonnegative=True)
         and source.entity_id not in tracked
     ]
-    energy = [source for source in sources if source.device_class == "energy"]
+    energy = [
+        source
+        for source in sources
+        if source.device_class == "energy"
+        and (source.entity_id in tracked or not personal_energy(source))
+    ]
     results: list[Candidate] = []
     for source in energy:
         candidate = Candidate(source, "ready")
         if source.entity_id in tracked:
             candidate.status = "tracked"
             candidate.reasons.append("Already used in Energy settings")
+            if personal_energy(source):
+                candidate.reasons.append(
+                    "Personal activity energy; existing Energy configuration kept for review"
+                )
         elif source.key in ignored:
             candidate.status = "ignored"
             candidate.reasons.append("Ignored; restore it from Energy Scout options")

@@ -3,6 +3,7 @@
 from dataclasses import replace
 
 import pytest
+from homeassistant.const import UnitOfEnergy
 
 from custom_components.energy_scout.models import discover, numeric, referenced_statistics
 
@@ -139,3 +140,60 @@ def test_referenced_statistics_ignores_names_and_parent_links():
         ]
     }
     assert referenced_statistics(prefs) == {"sensor.total"}
+
+
+@pytest.mark.parametrize(
+    ("entity_id", "name", "unit"),
+    [
+        ("sensor.22101316ug_active_calories_burned", "22101316UG Active calories burned", "kcal"),
+        ("sensor.22101316ug_total_calories_burned", "22101316UG Total calories burned", "kcal"),
+        ("sensor.phone_basal_calories_burned", "Basal calories burned", "cal"),
+        ("sensor.phone_food_calories", "Food calories", "kcal"),
+        ("sensor.phone_active_energy", "Active energy", "kcal"),
+        ("sensor.phone_resting_energy", "Resting energy", "kcal"),
+        ("sensor.phone_calories_burned", "Calories burned", "kJ"),
+        ("sensor.phone_calories_burned", "Calories burned", "kWh"),
+    ],
+)
+def test_personal_energy_is_not_a_home_energy_suggestion(sources, entity_id, name, unit):
+    source = replace(sources[0], entity_id=entity_id, name=name, unit=unit)
+    # Even valid cumulative statistics must not make these recommendable.
+    assert discover([source], {}, set(), set(UnitOfEnergy), {"W"}) == []
+
+
+@pytest.mark.parametrize("unit", ["J", "kJ", "Wh", "kWh", "cal", "kcal", "Mcal", "Gcal", "thm"])
+def test_physical_heat_and_electrical_energy_units_remain_supported(sources, unit):
+    source = replace(
+        sources[0], entity_id="sensor.heating_energy_total", name="Heating energy", unit=unit
+    )
+    result = discover([source], {}, set(), set(UnitOfEnergy), {"W"})
+    assert len(result) == 1
+    assert result[0].selectable
+
+
+def test_electrical_active_energy_is_not_mistaken_for_fitness(sources):
+    assert scan(
+        [replace(sources[0], name="Active energy", entity_id="sensor.meter_active_energy")]
+    )[0].selectable
+
+
+@pytest.mark.parametrize("hint", ["original_name", "translation_key"])
+def test_renamed_fitness_sensor_keeps_its_original_type_hint(sources, hint):
+    source = replace(
+        sources[0],
+        entity_id="sensor.my_counter",
+        name="My counter",
+        **{hint: "active_calories_burned"},
+    )
+    assert scan([source]) == []
+
+
+def test_existing_personal_energy_configuration_is_kept_for_review(sources):
+    source = replace(
+        sources[0], entity_id="sensor.phone_calories_burned", name="Calories burned", unit="kcal"
+    )
+    preferences = {"device_consumption": [{"stat_consumption": source.entity_id}]}
+    result = discover([source], preferences, set(), set(UnitOfEnergy), {"W"})
+    assert result[0].status == "tracked"
+    assert "Personal activity" in result[0].reasons[-1]
+    assert preferences["device_consumption"] == [{"stat_consumption": source.entity_id}]

@@ -250,7 +250,7 @@ class EnergyScoutOptionsFlow(config_entries.OptionsFlow):
         if restoring:
             labels = {item.source.key: item.label for item in self.scout.candidates}
             choices = {
-                key: labels.get(key, f"Removed entity ({key})") for key in self.scout.ignored
+                key: labels.get(key, f"Saved suggestion ({key})") for key in self.scout.ignored
             }
         errors = {}
         if user_input is not None:

@@ -4,6 +4,7 @@ from dataclasses import replace
 
 from homeassistant.components.frontend import DATA_PANELS
 
+from custom_components.energy_scout.const import VERSION
 from custom_components.energy_scout.models import recommendations
 
 
@@ -12,7 +13,7 @@ async def test_sidebar_is_admin_only_and_removed_on_unload(hass, loaded):
     panel = hass.data[DATA_PANELS]["energy-scout"]
     assert panel.require_admin
     assert panel.config["_panel_custom"]["name"] == "energy-scout-panel"
-    assert "?v=0.1.0b3" in panel.config["_panel_custom"]["module_url"]
+    assert f"?v={VERSION}" in panel.config["_panel_custom"]["module_url"]
     await hass.config_entries.async_unload(entry.entry_id)
     assert "energy-scout" not in hass.data[DATA_PANELS]
 

@@ -1,15 +1,9 @@
-Energy Scout now has a dedicated HA sidebar page for larger installations.
+Fixes fitness calorie counters appearing in Energy Scout's household energy suggestions.
 
-- Reuses HA's native data table, search, checkboxes, forms, selectors, buttons, alerts, and app bar.
-- Lists discoveries and tracked counters together, with search, room/status filters, and sortable columns.
-- Adds Select recommended and a single batch review/confirmation. A 35-device fixture is exercised end to end.
-- Prefers one lifetime counter per channel and flags ambiguous totals or alternatives to existing tracked counters for manual review.
-- Provides editable names, power mappings, and upstream devices; drafts survive HA refreshes and rescans.
-- Supports bulk ignore/restore and guarded removal of owned entries. Panel and APIs require an administrator account.
-- Keeps native integration options as a fallback. No additional container, server, or manual dashboard resource configuration.
+- Excludes recognizable active/total calories burned, activity, and nutrition counters from new suggestions, including counters with valid cumulative statistics.
+- Uses original sensor names and translation keys as hints when the entity has been renamed.
+- Preserves legitimate electrical active-energy meters and heating meters in joules or calorie units. This is a semantic filter, not a blanket unit ban.
+- Leaves existing Energy configurations intact and available for review.
+- Includes calorie trackers in the real-HA browser fixture to verify they stay out of the table and bulk selections.
 
-Update through HACS, restart HA, and reload the frontend. Open **Energy Scout** in the sidebar. Choose **Select recommended → Review additions → Add N devices**.
-
-[Desktop, phone and batch-review previews](https://github.com/nemke/ha-energy-scout/blob/v0.1.0b3/README.md#scan--select--review--add).
-
-Validation targets HA 2026.10.4 and its matching frontend. Devices and Recorder metadata in automated tests are simulated. The native component loader and Energy preferences API are version-dependent. Existing counters are displayed for review; this beta does not replace their mappings automatically or introduce unattended registration.
+Update through HACS and restart HA, then reload the frontend and open Energy Scout. New calorie-tracker suggestions disappear on the next scan. No changes to your activity sensors are required.

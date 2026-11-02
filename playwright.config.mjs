@@ -16,7 +16,9 @@ export default defineConfig({
   },
   webServer: {
     command: `${process.env.SCOUT_PYTHON || 'python3'} -m tests.preview_server`,
-    url: 'http://127.0.0.1:8814',
+    // HA serves its root before bootstrap creates the preview login. This
+    // integration asset is registered only after that login has been written.
+    url: 'http://127.0.0.1:8814/energy_scout_static/energy-scout-panel.js',
     timeout: 180000,
     reuseExistingServer: !process.env.CI,
   },

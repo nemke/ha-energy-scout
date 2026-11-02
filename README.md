@@ -4,7 +4,7 @@ Discover existing energy counters and review devices to add to Home Assistant's 
 
 Energy Scout is a Python custom integration with a bundled sidebar page. It runs inside HA and reuses HA's data table, search, forms, selectors, buttons, and layout components. No additional container, server, cloud account, PHP runtime, access token, or dashboard resource setup is needed. It is independent of Breeze Purifier Card.
 
-**Beta: 0.1.0b3.** Requires Home Assistant **2026.10.4** or newer. Automated compatibility validation currently covers 2026.10.4; newer releases have not yet been verified. Catalog submission: [hacs/default#13140](https://github.com/hacs/default/pull/13140). Until accepted, install it as a custom repository.
+**Beta: 0.1.0b4.** Requires Home Assistant **2026.10.4** or newer. Automated compatibility validation currently covers 2026.10.4; newer releases have not yet been verified. Catalog submission: [hacs/default#13140](https://github.com/hacs/default/pull/13140). Until accepted, install it as a custom repository.
 
 ## Install
 
@@ -51,6 +51,8 @@ An accepted configuration does not guarantee immediate graphs: HA may need time 
 - Power-only devices need an energy counter first. You can create one with HA's Integration helper or another suitable integration; Energy Scout does not estimate consumption or create helpers in this version.
 
 Eligibility checks include energy device class, HA energy units, cumulative state class (or legacy measurement with a reset), finite nonnegative current readings, Recorder inclusion, and existing sum metadata. Power suggestions require compatible power metadata and mean statistics. Disabled, unavailable, excluded, and not-yet-recorded sources are reported instead of converted to zero.
+
+Fitness/activity calorie counters are excluded from new appliance suggestions, even when HA classifies them as energy. Detection uses entity names and original sensor metadata. Legitimate heating meters in calorie or joule units and electrical active-energy counters remain supported. Existing Energy configurations are kept for review.
 
 ## Background discovery
 
