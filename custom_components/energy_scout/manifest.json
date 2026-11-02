@@ -12,6 +12,7 @@
   ],
   "documentation": "https://github.com/nemke/ha-energy-scout",
   "integration_type": "service",
+  "iot_class": "calculated",
   "issue_tracker": "https://github.com/nemke/ha-energy-scout/issues",
   "version": "0.1.0b1"
 }

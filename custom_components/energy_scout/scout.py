@@ -157,6 +157,8 @@ class Scout:
             if self.closed:
                 raise ScoutError("stale_review")
             candidates = {item.source.key: item for item in await self._async_scan()}
+            if self.closed:
+                raise ScoutError("stale_review")
             additions: list[tuple[str, dict[str, str]]] = []
             channels: set[tuple[str, str]] = set()
             used_power: set[str] = set()

@@ -92,6 +92,19 @@ async def test_rename_during_review_requires_reconfirmation(loaded):
         await scout.async_apply({"washer-energy-id": {"entity_id": "sensor.previous_name"}})
 
 
+async def test_unload_while_metadata_is_loading_prevents_writes(loaded, sources):
+    _, scout = loaded
+
+    async def close_during_read():
+        scout.closed = True
+        return sources
+
+    with patch.object(scout, "async_sources", close_during_read):
+        with pytest.raises(ScoutError, match="stale_review"):
+            await scout.async_apply({"washer-energy-id": {}})
+    assert not scout.adapter.preferences()["device_consumption"]
+
+
 @pytest.mark.parametrize(
     "proposal, error",
     [
