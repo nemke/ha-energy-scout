@@ -16,6 +16,7 @@ from pathlib import Path
 from homeassistant import loader
 from homeassistant.auth.const import GROUP_ID_ADMIN
 from homeassistant.bootstrap import async_from_config_dict
+from homeassistant.components.http.config import async_get_and_load_store
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
@@ -92,6 +93,7 @@ async def main() -> None:
         )
         hass = HomeAssistant(config_dir)
         loader.async_setup(hass)
+        hass.config.skip_pip = True
         # Mark this isolated preview onboarded before loading its frontend.
         await Store(hass, 4, "onboarding").async_save(
             {"done": ["user", "core_config", "integration", "analytics"]}
@@ -140,6 +142,11 @@ async def main() -> None:
             result["flow_id"], {"notify_new_devices": False}
         )
         await hass.async_start()
+        # Confirm this disposable localhost listener before opening the browser;
+        # HTTP setup dialogs are unrelated to the Energy Scout tests.
+        http_store = await async_get_and_load_store(hass)
+        if http_store.pending is not None:
+            await http_store.async_promote_pending()
         print("Energy Scout preview ready at http://127.0.0.1:8814/energy-scout", flush=True)
         done = asyncio.Event()
         for signum in (signal.SIGINT, signal.SIGTERM):

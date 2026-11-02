@@ -85,6 +85,7 @@ Tests exercise discovery rules, actual HA configuration flows, the actual Energy
 The sidebar asset is included inside the integration; users do not install Node or copy JavaScript resources. Frontend development requires Node 24/npm 11:
 
 ```sh
+.venv/bin/pip install -r requirements_preview.txt
 npm ci
 SCOUT_PYTHON=.venv/bin/python npm test
 ```

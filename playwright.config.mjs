@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 
 export default defineConfig({
   testDir: 'tests/browser',
+  maxFailures: 1,
   workers: 1,
   timeout: 60000,
   use: {

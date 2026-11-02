@@ -31,11 +31,12 @@ jobs:
         with:
           python-version: '3.14'
           cache: pip
-      - run: pip install -r requirements_test.txt
+      - run: pip install -r requirements_preview.txt
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: npm
+      - run: sudo apt-get update && sudo apt-get install -y libturbojpeg0 libspeexdsp1 ffmpeg
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm test
