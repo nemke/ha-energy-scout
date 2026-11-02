@@ -1,12 +1,15 @@
-Initial Energy Scout beta for Home Assistant 2026.10.4.
+Energy Scout now has a dedicated HA sidebar page for larger installations.
 
-- Discovers existing energy counters, identifies already tracked sensors, and explains missing Recorder statistics, unavailable readings, and incompatible metadata.
-- Provides native HA dialogs for bulk selection, editable names, same-device power mappings, upstream device selection, and final review.
-- Adds only reviewed Individual device entries, preserving existing Energy preferences and rejecting stale or duplicate selections.
-- Includes persistent ignore/restore controls, background metadata discovery, optional notifications, and guarded removal of unchanged entries added by Energy Scout.
-- Runs inside HA with Python. No separate container, server, frontend bundle, or access token.
+- Reuses HA's native data table, search, checkboxes, forms, selectors, buttons, alerts, and app bar.
+- Lists discoveries and tracked counters together, with search, room/status filters, and sortable columns.
+- Adds Select recommended and a single batch review/confirmation. A 35-device fixture is exercised end to end.
+- Prefers one lifetime counter per channel and flags ambiguous totals or alternatives to existing tracked counters for manual review.
+- Provides editable names, power mappings, and upstream devices; drafts survive HA refreshes and rescans.
+- Supports bulk ignore/restore and guarded removal of owned entries. Panel and APIs require an administrator account.
+- Keeps native integration options as a fallback. No additional container, server, or manual dashboard resource configuration.
 
-**Beta limitations:** device/Recorder fixtures are simulated on the real HA 2026.10.4 runtime. Validation on a real installation is still needed. Hardware roles and upstream relationships require review. This version does not automatically register devices, create energy helpers, or rewrite existing entries on rename. The internal Energy API is version-dependent.
+Update through HACS, restart HA, and reload the frontend. Open **Energy Scout** in the sidebar. Choose **Select recommended → Review additions → Add N devices**.
 
-Install as a HACS custom repository with category **Integration**, restart HA, then add **Energy Scout** under Settings → Devices & services. Open its Configure/Options dialog to review devices. If the beta version is not listed, enable beta versions or select the repository's main branch.
+[Desktop, phone and batch-review previews](https://github.com/nemke/ha-energy-scout/blob/v0.1.0b2/README.md#scan--select--review--add).
 
+Validation targets HA 2026.10.4 and its matching frontend. Devices and Recorder metadata in automated tests are simulated. The native component loader and Energy preferences API are version-dependent. Existing counters are displayed for review; this beta does not replace their mappings automatically or introduce unattended registration.

@@ -62,7 +62,19 @@ def channel_name(entity_id: str) -> str:
     return "_".join(
         word
         for word in words
-        if word not in {"energy", "power", "total", "consumption", "today", "yesterday", "daily"}
+        if word
+        not in {
+            "energy",
+            "power",
+            "total",
+            "consumption",
+            "today",
+            "yesterday",
+            "daily",
+            "weekly",
+            "monthly",
+            "yearly",
+        }
     )
 
 
@@ -200,3 +212,66 @@ def discover(
             candidate.source.entity_id,
         ),
     )
+
+
+def recommendations(candidates: list[Candidate]) -> tuple[set[str], dict[str, str]]:
+    """Choose counters for a bulk review, never authorize unattended additions.
+
+    A lifetime counter can be preferred over a period counter. A tracked sibling
+    or multiple plausible totals always needs review; never select both.
+    """
+    selected: set[str] = set()
+    reasons: dict[str, str] = {}
+    groups: dict[tuple[str, str], list[Candidate]] = {}
+    for item in candidates:
+        if item.source.device_class == "energy":
+            groups.setdefault(
+                (item.source.device_id or item.source.key, channel_name(item.source.entity_id)), []
+            ).append(item)
+    for group in groups.values():
+        ready = [item for item in group if item.selectable]
+        if not ready:
+            continue
+        if any(item.status == "tracked" for item in group):
+            for item in ready:
+                reasons[item.source.key] = (
+                    "Another counter for this channel is already tracked. Review overlapping consumption in Energy settings."
+                )
+            continue
+        plausible = []
+        for item in ready:
+            text = (item.source.entity_id + " " + item.source.name).replace("_", " ").lower()
+            if item.source.device_id is None:
+                reasons[item.source.key] = "No device association; choose this counter manually."
+            elif re.search(
+                r"\b(grid|solar|export|import|production|battery|inverter|mains)\b|whole.house",
+                text,
+            ):
+                reasons[item.source.key] = (
+                    "Check whether this is appliance consumption or a whole-house/production meter."
+                )
+            else:
+                plausible.append(item)
+        totals = [
+            item
+            for item in plausible
+            if not re.search(
+                r"\b(today|yesterday|daily|weekly|monthly|yearly)\b",
+                item.source.entity_id.replace("_", " "),
+            )
+        ]
+        if len(totals) == 1:
+            selected.add(totals[0].source.key)
+            for item in plausible:
+                if item is not totals[0]:
+                    reasons[item.source.key] = (
+                        "A lifetime counter is recommended instead of this period counter."
+                    )
+        elif len(plausible) == 1:
+            selected.add(plausible[0].source.key)
+        else:
+            for item in plausible:
+                reasons[item.source.key] = (
+                    "Several counters could cover this channel; select one manually."
+                )
+    return selected, reasons

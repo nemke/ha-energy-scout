@@ -23,6 +23,24 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: home-assistant/actions/hassfest@master
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+          cache: pip
+      - run: pip install -r requirements_test.txt
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - name: Verify the shipped bundle matches its source
+        run: git diff --exit-code -- custom_components/energy_scout/frontend/energy-scout-panel.js
   hacs:
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +51,7 @@ jobs:
           comment: false
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [tests, hassfest, hacs]
+    needs: [tests, hassfest, hacs, frontend]
     runs-on: ubuntu-latest
     permissions:
       contents: write

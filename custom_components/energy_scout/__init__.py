@@ -12,6 +12,7 @@ from homeassistant.helpers.storage import Store
 
 from .const import CONF_NOTIFY, DOMAIN, NOTIFICATION_ID, STORAGE_VERSION
 from .energy import EnergyAdapter
+from .panel import async_register, async_unregister
 from .scout import RESCAN_INTERVAL, Scout
 
 type ScoutConfigEntry = ConfigEntry[Scout]
@@ -27,6 +28,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ScoutConfigEntry) -> boo
     )
     await scout.async_load()
     entry.runtime_data = scout
+    await async_register(hass)
+    entry.async_on_unload(lambda: async_unregister(hass))
     cancel_pending = None
 
     @callback

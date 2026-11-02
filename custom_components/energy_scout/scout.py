@@ -135,7 +135,7 @@ class Scout:
             persistent_notification.async_create(
                 self.hass,
                 f"{len(keys)} energy counter(s) are ready for review. "
-                "Open [Energy Scout options](/config/integrations/integration/energy_scout) "
+                "Open [Energy Scout](/energy-scout) "
                 "to select devices for the Energy dashboard. Nothing has been added automatically.",
                 title="Energy Scout found energy counters",
                 notification_id=NOTIFICATION_ID,
