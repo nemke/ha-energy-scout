@@ -1,0 +1,17 @@
+{
+  "domain": "energy_scout",
+  "name": "Energy Scout",
+  "codeowners": [
+    "@nemke"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "energy",
+    "persistent_notification",
+    "recorder"
+  ],
+  "documentation": "https://github.com/nemke/ha-energy-scout",
+  "integration_type": "service",
+  "issue_tracker": "https://github.com/nemke/ha-energy-scout/issues",
+  "version": "0.1.0b1"
+}

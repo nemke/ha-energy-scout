@@ -1,0 +1,125 @@
+{
+  "title": "Energy Scout",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Energy Scout",
+        "description": "Discover existing energy counters and review devices to add to the Energy dashboard. Setup does not change your Energy settings. After setup, open the integration options to scan and review devices.",
+        "data": {
+          "notify_new_devices": "Notify when counters are ready for review"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Energy Scout is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Energy Scout",
+        "menu_options": {
+          "review": "Review and add devices",
+          "report": "View scan report / rescan",
+          "ignore": "Ignore suggestions",
+          "restore": "Restore ignored suggestions",
+          "remove": "Remove entries added by Energy Scout",
+          "settings": "Discovery notifications"
+        }
+      },
+      "report": {
+        "title": "Local sensor scan",
+        "description": "{report}\n\nSubmit to rescan and return to the menu. No Energy settings have changed."
+      },
+      "review": {
+        "title": "Choose energy counters",
+        "description": "{report}\n\nSelect appliance consumption counters. Prefer lifetime totals over daily counters when both exist. Multiple outlets can be added separately. Grid, solar, battery, production, and overlapping aggregate counters need manual review. The next screen lets you review and customize before adding.",
+        "data": {
+          "sensors": "Energy counters to review"
+        }
+      },
+      "confirm": {
+        "title": "Review {count} device(s)",
+        "description": "{summary}\n\nCheck the energy and power sources cover the same appliance or outlet. Use Customize to change a name, power sensor, or upstream device. Add devices updates only Individual devices.",
+        "data": {
+          "action": "Next action"
+        }
+      },
+      "customize": {
+        "title": "Customize a mapping",
+        "data": {
+          "sensor": "Counter to customize"
+        }
+      },
+      "mapping": {
+        "title": "Device mapping",
+        "description": "Energy counter: `{entity_id}`. Power is optional. Upstream devices are existing Individual devices whose consumption already includes this appliance.",
+        "data": {
+          "name": "Display name",
+          "power": "Power sensor",
+          "upstream": "Upstream device"
+        }
+      },
+      "ignore": {
+        "title": "Ignore suggestions",
+        "description": "Ignored sensors stay in HA. Their suggestions remain ignored across entity renames and can be restored later.",
+        "data": {
+          "sensors": "Suggestions to ignore"
+        }
+      },
+      "restore": {
+        "title": "Restore suggestions",
+        "data": {
+          "sensors": "Ignored suggestions to restore"
+        }
+      },
+      "remove": {
+        "title": "Remove entries added by Energy Scout",
+        "description": "Only entries recorded as added by this integration are listed. You will confirm before removing them.",
+        "data": {
+          "sensors": "Entries to remove"
+        }
+      },
+      "confirm_remove": {
+        "title": "Confirm removal from Energy",
+        "description": "{summary}\n\nRemove these dashboard entries? Their sensors and history are kept. Entries edited outside Energy Scout and entries with upstream dependents are protected.",
+        "data": {
+          "confirm": "Remove these entries"
+        }
+      },
+      "settings": {
+        "title": "Discovery notifications",
+        "description": "Background scans only read HA metadata. They never poll devices or add Energy entries automatically.",
+        "data": {
+          "notify_new_devices": "Notify when counters are ready for review"
+        }
+      }
+    },
+    "error": {
+      "empty_selection": "Select at least one available counter.",
+      "stale_review": "The sensors or Energy settings changed. Go back and scan again before applying.",
+      "duplicate_counter": "Two selected counters appear to cover the same channel. Choose one counter, preferably the lifetime total.",
+      "invalid_power": "A power sensor is unavailable, already assigned, or shared by multiple selections. Customize the mappings or leave power unset.",
+      "invalid_upstream": "The chosen upstream device is no longer configured. Review its mapping.",
+      "modified_entry": "An entry changed outside Energy Scout or was removed. Keep it and manage that entry in HA Energy settings.",
+      "has_children": "Other tracked devices use this entry as their upstream device. Adjust those relationships in Energy settings first.",
+      "write_failed": "The operation could not finish. Check Energy settings and HA logs before trying again."
+    },
+    "abort": {
+      "not_loaded": "Energy Scout is not loaded. Check HA logs and reload the integration.",
+      "scan_failed": "Could not read local sensor statistics. Check that Recorder is running, then retry.",
+      "stale_review": "The sensors or Energy settings changed. Go back and scan again before applying.",
+      "devices_added": "Added {count} device(s) to Energy settings. Open the Energy dashboard; new statistics may take time to appear.",
+      "devices_removed": "Removed {count} Energy dashboard entry/entries. Sensors and recorded history remain intact."
+    }
+  },
+  "selector": {
+    "review_action": {
+      "options": {
+        "apply": "Add devices to Energy dashboard",
+        "customize": "Customize a device mapping",
+        "back": "Go back to selection"
+      }
+    }
+  }
+}
