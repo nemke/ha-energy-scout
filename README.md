@@ -4,7 +4,7 @@ Discover existing energy counters and review devices to add to Home Assistant's 
 
 Energy Scout is a Python custom integration with a bundled sidebar page. It runs inside HA and reuses HA's data table, search, forms, selectors, buttons, and layout components. No additional container, server, cloud account, PHP runtime, access token, or dashboard resource setup is needed. It is independent of Breeze Purifier Card.
 
-**Beta: 0.1.0b4.** Requires Home Assistant **2026.10.4** or newer. Automated compatibility validation currently covers 2026.10.4; newer releases have not yet been verified. Catalog submission: [hacs/default#13140](https://github.com/hacs/default/pull/13140). Until accepted, install it as a custom repository.
+**Stable release: 0.1.0.** Requires Home Assistant **2026.10.4** or newer. Automated compatibility validation currently covers 2026.10.4; newer releases have not yet been verified. Catalog submission: [hacs/default#13140](https://github.com/hacs/default/pull/13140). Until accepted, install it as a custom repository.
 
 ## Install
 
@@ -12,6 +12,8 @@ Energy Scout is a Python custom integration with a bundled sidebar page. It runs
 2. Download **Energy Scout** and restart Home Assistant.
 3. Open **Settings → Devices & services → Add integration → Energy Scout**.
 4. Open **Energy Scout** in the HA sidebar. If needed, reload the frontend to show the new entry.
+
+To update an existing installation, download the latest release in HACS, restart HA, and reload the frontend. Existing configuration and recorded ownership data are retained. Stable releases do not require enabling beta versions in HACS.
 
 The native **Configure/Options** dialogs remain available as a fallback.
 
@@ -82,7 +84,7 @@ python3.14 -m venv .venv
 .venv/bin/pytest -q
 ```
 
-Tests exercise discovery rules, actual HA configuration flows, the actual Energy preferences manager and storage, merges, stale reviews, exclusions, notifications, and guarded removal. Device and Recorder metadata fixtures are simulated; validation on a real HA installation remains necessary before a stable release.
+Tests exercise discovery rules, actual HA configuration flows, the actual Energy preferences manager and storage, merges, stale reviews, exclusions, notifications, and guarded removal. Device and Recorder metadata fixtures are simulated; automated tests do not cover every hardware integration or installation.
 
 The sidebar asset is included inside the integration; users do not install Node or copy JavaScript resources. Frontend development requires Node 24/npm 11:
 
