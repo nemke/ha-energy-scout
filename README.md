@@ -4,11 +4,11 @@ Discover existing energy counters and review devices to add to Home Assistant's 
 
 Energy Scout is a Python custom integration with a bundled sidebar page. It runs inside HA and reuses HA's data table, search, forms, selectors, buttons, and layout components. No additional container, server, cloud account, PHP runtime, access token, or dashboard resource setup is needed. It is independent of Breeze Purifier Card.
 
-**Stable release: 0.1.0.** Requires Home Assistant **2026.10.4** or newer. Automated compatibility validation currently covers 2026.10.4; newer releases have not yet been verified. Catalog submission: [hacs/default#13140](https://github.com/hacs/default/pull/13140). Until accepted, install it as a custom repository.
+**Stable release: 0.1.0.** Requires Home Assistant **2026.10.4** or newer. Automated compatibility validation currently covers 2026.10.4; newer releases have not yet been verified. Energy Scout is included in the [HACS default catalog](https://github.com/hacs/default/pull/13140).
 
 ## Install
 
-1. In HACS, open **Custom repositories** and add `https://github.com/nemke/ha-energy-scout`, category **Integration**.
+1. Open **HACS** and search for **Energy Scout**.
 2. Download **Energy Scout** and restart Home Assistant.
 3. Open **Settings → Devices & services → Add integration → Energy Scout**.
 4. Open **Energy Scout** in the HA sidebar. If needed, reload the frontend to show the new entry.
@@ -16,6 +16,14 @@ Energy Scout is a Python custom integration with a bundled sidebar page. It runs
 To update an existing installation, download the latest release in HACS, restart HA, and reload the frontend. Existing configuration and recorded ownership data are retained. Stable releases do not require enabling beta versions in HACS.
 
 The native **Configure/Options** dialogs remain available as a fallback.
+
+### Custom repository fallback
+
+If Energy Scout is not yet available in HACS search, you can add it manually. New default-catalog entries can take up to eight hours to appear in HACS.
+
+1. In HACS, open **Custom repositories** from the menu.
+2. Add `https://github.com/nemke/ha-energy-scout`, category **Integration**.
+3. Download **Energy Scout**, restart HA, and continue with step 3 above.
 
 Alternatively, copy `custom_components/energy_scout` into your HA configuration's `custom_components` folder and restart HA.
 
